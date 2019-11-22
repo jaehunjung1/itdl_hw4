@@ -18,7 +18,7 @@ if USE_GPU and torch.cuda.is_available():
 else:
     device = torch.device('cpu')
 
-vocab = open('vocab.txt').read().splitlines()
+vocab = open('vocab.txt', encoding='utf-8').read().splitlines()
 n_vocab = len(vocab)
 torch.manual_seed(1)
 
@@ -63,7 +63,7 @@ def train(dataset, model, optimizer, n_iters):
     model.to(device=device)
     model.train()
     start = time.time()
-    print_every = 1
+    print_every = 50
     criterion = nn.CrossEntropyLoss()
     for e in range(n_iters):
         for i, (x, y) in enumerate(dataset):
@@ -75,7 +75,7 @@ def train(dataset, model, optimizer, n_iters):
             loss.backward()
             optimizer.step()
         if e % print_every == 0:
-            print(f"Iteration {e}, {e / n_iters * 100} | {time_since(start)}, Loss: loss")
+            print(f"Iteration {e}, {e / n_iters * 100} | {time_since(start)}, Loss: {loss}")
             print(test('W'))
         if e % 100 == 0:
             torch.save(model.state_dict(), f'./{e}.fng_pt.pt')
