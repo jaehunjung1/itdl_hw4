@@ -78,7 +78,7 @@ def train(dataset, model, optimizer, n_iters):
             print(f"Iteration {e}, {e / n_iters * 100} | {time_since(start)}, Loss: loss")
             print(test('W'))
         if e % 100 == 0:
-            torch.save(model.state_dict(), 'fng_pt.pt')
+            torch.save(model.state_dict(), f'./{e}.fng_pt.pt')
 
 
 def test(start_letter):
