@@ -64,7 +64,7 @@ def train(dataset, model, optimizer, n_iters):
     model.to(device=device)
     model.train()
     start = time.time()
-    print_every = 1
+    print_every = 50
     criterion = nn.CrossEntropyLoss()
     for e in range(n_iters):
         for i, (x, y) in enumerate(dataset):
@@ -75,12 +75,11 @@ def train(dataset, model, optimizer, n_iters):
             loss = criterion(output.view(-1, vocab_len), y.view(-1))
             loss.backward()
             optimizer.step()
-        if e % print_every == 0:
+        if (e + 1) % print_every == 0:
             print(f"Iteration {e}, {e / n_iters * 100} | {time_since(start)}, Loss: {loss}")
-            print(test('W'))
-        if e % 100 == 0:
+            ### if e % p == 0:
             torch.save(model.state_dict(), f'./{e}.fng_pt.pt')
-
+            print(test('W').encode('ascii', 'ignore').decode('utf-8', 'ignore'))
 
 def test(start_letter):
     max_length = 1000
@@ -103,7 +102,7 @@ def test(start_letter):
 
 
 if __name__ == '__main__':
-    n_iters = 20
+    n_iters = 100
     vocab_len = len(vocab)
     dataset = NewsDataset(csv_file='data.csv', vocab=vocab)
     train_loader = DataLoader(dataset=dataset,
