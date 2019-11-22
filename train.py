@@ -45,7 +45,7 @@ class NewsDataset(Dataset):
         self.y_data = torch.tensor(text2int(self.csv_file, 'y_data', self.vocab))
 
     def __len__(self):
-        return self.len
+        return self.x_data.size(0)
 
     def __getitem__(self, idx):
         return self.x_data[idx], self.y_data[idx]
@@ -102,7 +102,7 @@ def test(start_letter):
 
 
 if __name__ == '__main__':
-    n_iters = 500
+    n_iters = 20
     vocab_len = len(vocab)
 
     dataset = NewsDataset(csv_file='data.csv', vocab=vocab)
