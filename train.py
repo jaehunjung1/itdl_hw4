@@ -41,11 +41,11 @@ class NewsDataset(Dataset):
         self.csv_file = pd.read_csv(csv_file, sep='|')
         self.vocab = vocab
         self.len = len(self.csv_file)
-        self.x_data = torch.tensor(text2int(self.csv_file, 'x_data', self.vocab))
-        self.y_data = torch.tensor(text2int(self.csv_file, 'y_data', self.vocab))
+        self.x_data = torch.tensor(text2int(self.csv_file, 'x_data', self.vocab)[:169280]).view(-1, 64)
+        self.y_data = torch.tensor(text2int(self.csv_file, 'y_data', self.vocab)[:169280]).view(-1, 64)
 
     def __len__(self):
-        return self.x_data.size(0)
+        return self.len
 
     def __getitem__(self, idx):
         return self.x_data[idx], self.y_data[idx]
@@ -67,11 +67,11 @@ def train(dataset, model, optimizer, n_iters):
     criterion = nn.CrossEntropyLoss()
     for e in range(n_iters):
         for i, (x, y) in enumerate(dataset):
-            x = x.to(device=device).unsqueeze(1)
+            x = x.to(device=device)
             y = y.to(device=device)
             model.zero_grad()
-            output = model(x)  # output: (batch_size, 1, vocab_len)
-            loss = criterion(output.squeeze(1), y)
+            output = model(x)  # output: (batch_size, sentence_len, vocab_len)
+            loss = criterion(output.view(-1, vocab_len), y.view(-1))
             loss.backward()
             optimizer.step()
         if e % print_every == 0:
@@ -97,14 +97,13 @@ def test(start_letter):
             output_sen += letter
             idx = vocab.index(letter)
             input_nparray = np.append(input_nparray, [idx])
-            inputs = torch.tensor(input_nparray, device=device, dtype=torch.long).unsqueeze(1)
+            inputs = torch.tensor(input_nparray, device=device, dtype=torch.long)
     return output_sen
 
 
 if __name__ == '__main__':
     n_iters = 20
     vocab_len = len(vocab)
-
     dataset = NewsDataset(csv_file='data.csv', vocab=vocab)
     train_loader = DataLoader(dataset=dataset,
                               batch_size=64,
