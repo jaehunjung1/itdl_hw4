@@ -42,10 +42,11 @@ class NewsDataset(Dataset):
         self.vocab = vocab
         # self.len = len(self.csv_file)
 
-        self.len = 2645
+        # self.len = 2645
         # self.x_data = torch.tensor(text2int(self.csv_file, 'x_data', self.vocab)[:169280]).view(-1, 64)
         # self.y_data = torch.tensor(text2int(self.csv_file, 'y_data', self.vocab)[:169280]).view(-1, 64)
 
+        self.len = 3200 // 64
         self.x_data = torch.tensor(text2int(self.csv_file, 'x_data', self.vocab)[:3200]).view(-1, 64)
         self.y_data = torch.tensor(text2int(self.csv_file, 'y_data', self.vocab)[:3200]).view(-1, 64)
 
