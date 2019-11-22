@@ -77,9 +77,9 @@ def train(dataset, model, optimizer, n_iters):
             optimizer.step()
         if (e + 1) % print_every == 0:
             print(f"Iteration {e}, {e / n_iters * 100} | {time_since(start)}, Loss: {loss}")
-            ### if e % p == 0:
             torch.save(model.state_dict(), f'./{e}.fng_pt.pt')
             print(test('W').encode('ascii', 'ignore').decode('utf-8', 'ignore'))
+
 
 def test(start_letter):
     max_length = 1000
