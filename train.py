@@ -40,7 +40,8 @@ class NewsDataset(Dataset):
     def __init__(self, csv_file, vocab):
         self.csv_file = pd.read_csv(csv_file, sep='|')
         self.vocab = vocab
-        self.len = len(self.csv_file)
+        # self.len = len(self.csv_file)
+        self.len = 2645
         self.x_data = torch.tensor(text2int(self.csv_file, 'x_data', self.vocab)[:169280]).view(-1, 64)
         self.y_data = torch.tensor(text2int(self.csv_file, 'y_data', self.vocab)[:169280]).view(-1, 64)
 
@@ -63,7 +64,7 @@ def train(dataset, model, optimizer, n_iters):
     model.to(device=device)
     model.train()
     start = time.time()
-    print_every = 50
+    print_every = 1
     criterion = nn.CrossEntropyLoss()
     for e in range(n_iters):
         for i, (x, y) in enumerate(dataset):
@@ -90,14 +91,14 @@ def test(start_letter):
         inputs = torch.tensor(input_nparray, device=device, dtype=torch.long)
         output_sen = start_letter
         for i in range(max_length):
-            output = model(inputs).squeeze(1)
+            output = model(inputs).squeeze(0)
             topv, topi = output.topk(1)
             topi = topi[-1]
             letter = vocab[topi]
             output_sen += letter
             idx = vocab.index(letter)
             input_nparray = np.append(input_nparray, [idx])
-            inputs = torch.tensor(input_nparray, device=device, dtype=torch.long)
+            inputs = torch.tensor(input_nparray, device=device, dtype=torch.long).unsqueeze(0)
     return output_sen
 
 
