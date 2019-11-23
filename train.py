@@ -8,9 +8,6 @@ import math
 
 from model import CharacterLSTM
 
-import ipdb
-from tqdm import tqdm
-
 
 ########### Change whether you would use GPU on this homework or not ############
 USE_GPU = True
