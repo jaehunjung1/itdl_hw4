@@ -69,7 +69,7 @@ def train(dataset, model, optimizer, n_iters):
     start = time.time()
     print_every = 50
     criterion = nn.CrossEntropyLoss()
-    for e in tqdm(range(n_iters)):
+    for e in range(n_iters):
         for i, (x, y) in enumerate(dataset):
             x = x.to(device=device)
             y = y.to(device=device)
@@ -78,10 +78,9 @@ def train(dataset, model, optimizer, n_iters):
             loss = criterion(output.view(-1, vocab_len), y.view(-1))
             loss.backward()
             optimizer.step()
-        if (e + 1) % print_every == 0:
+        if e % print_every == 0:
             print(f"Iteration {e}, {e / n_iters * 100} | {time_since(start)}, Loss: {loss}")
-            torch.save(model.state_dict(), f'./{e}.fng_pt.pt')
-            print(test('W').encode('ascii', 'ignore').decode('utf-8', 'ignore'))
+            torch.save(model.state_dict(), f'./fng_pt.pt')
 
 
 def test(start_letter):
