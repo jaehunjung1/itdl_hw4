@@ -9,6 +9,8 @@ import math
 from model import CharacterLSTM
 
 import ipdb
+from tqdm import tqdm
+
 
 ########### Change whether you would use GPU on this homework or not ############
 USE_GPU = True
@@ -65,9 +67,9 @@ def train(dataset, model, optimizer, n_iters):
     model.to(device=device)
     model.train()
     start = time.time()
-    print_every = 1
+    print_every = 50
     criterion = nn.CrossEntropyLoss()
-    for e in range(n_iters):
+    for e in tqdm(range(n_iters)):
         for i, (x, y) in enumerate(dataset):
             x = x.to(device=device)
             y = y.to(device=device)
@@ -92,8 +94,10 @@ def test(start_letter):
         output_sen = start_letter
         for i in range(max_length):
             output = model(inputs).squeeze(0)
-            topv, topi = output.topk(5)
-            topi = topi[-1][torch.multinomial(topv[-1], 1)]  # sample from top 5
+            # topv, topi = output.topk(5)
+            # topi = topi[-1][torch.multinomial(topv[-1], 1)]  # sample from top 5
+            topv, topi = output.topk(1)
+            topi = topi[-1]
             letter = vocab[topi]
             output_sen += letter
             idx = vocab.index(letter)
@@ -110,7 +114,7 @@ if __name__ == '__main__':
                               batch_size=64,
                               shuffle=False,
                               num_workers=1)
-    model = CharacterLSTM(vocab_len)
+    model = CharacterLSTM(vocab_len, device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), eps=2e-16, weight_decay=0)
     train(train_loader, model, optimizer, n_iters)
 
