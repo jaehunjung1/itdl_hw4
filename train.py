@@ -103,7 +103,7 @@ def test(start_letter):
 
 
 if __name__ == '__main__':
-    n_iters = 300
+    n_iters = 500
     vocab_len = len(vocab)
     dataset = NewsDataset(csv_file='data.csv', vocab=vocab)
     train_loader = DataLoader(dataset=dataset,
