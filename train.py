@@ -65,7 +65,7 @@ def train(dataset, model, optimizer, n_iters):
     model.to(device=device)
     model.train()
     start = time.time()
-    print_every = 50
+    print_every = 1
     criterion = nn.CrossEntropyLoss()
     for e in range(n_iters):
         for i, (x, y) in enumerate(dataset):

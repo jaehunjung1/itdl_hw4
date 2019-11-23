@@ -7,12 +7,15 @@ import ipdb
 class CharacterLSTM(nn.Module):
     def __init__(self, vocab_len):
         super(CharacterLSTM, self).__init__()
-        self.embed = nn.Embedding(vocab_len, 50)
-        self.lstm = nn.LSTM(50, hidden_size=75, bidirectional=True, batch_first=True, dropout=0.3, num_layers=2)
-        self.linear = nn.Linear(150, vocab_len)
+        self.vocab_len = vocab_len
+        self.lstm = nn.LSTM(self.vocab_len, hidden_size=150,
+                            bidirectional=True, batch_first=True,
+                            dropout=0.3, num_layers=2)
+        self.linear = nn.Linear(300, vocab_len)
 
-    def forward(self, x):
-        out = self.embed(x)
+    def forward(self, x):  # x : (batch_size, sentence_len)
+        out = torch.arange(self.vocab_len).view(1, 1, -1).repeat((*x.size(), 1))
+        out = (out == x.unsqueeze(2)).float()
         out, _ = self.lstm(out)
         out = self.linear(out)
         return out  # (64, 1, vocab_len)
