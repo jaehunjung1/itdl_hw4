@@ -106,7 +106,7 @@ def test(start_letter):
 
 
 if __name__ == '__main__':
-    n_iters = 500
+    n_iters = 450
     vocab_len = len(vocab)
     dataset = NewsDataset(csv_file='data.csv', vocab=vocab)
     train_loader = DataLoader(dataset=dataset,
@@ -116,5 +116,6 @@ if __name__ == '__main__':
     model = CharacterLSTM(vocab_len, device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), eps=2e-16, weight_decay=0)
     train(train_loader, model, optimizer, n_iters)
-
+    
+    print(test('W').encode('ascii', 'ignore').decode('utf-8', 'ignore'))
 
