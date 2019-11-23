@@ -92,8 +92,8 @@ def test(start_letter):
         output_sen = start_letter
         for i in range(max_length):
             output = model(inputs).squeeze(0)
-            topv, topi = output.topk(1)
-            topi = topi[-1]
+            topv, topi = output.topk(5)
+            topi = topi[-1][torch.multinomial(topv[-1], 1)]  # sample from top 5
             letter = vocab[topi]
             output_sen += letter
             idx = vocab.index(letter)
@@ -103,7 +103,7 @@ def test(start_letter):
 
 
 if __name__ == '__main__':
-    n_iters = 100
+    n_iters = 300
     vocab_len = len(vocab)
     dataset = NewsDataset(csv_file='data.csv', vocab=vocab)
     train_loader = DataLoader(dataset=dataset,
